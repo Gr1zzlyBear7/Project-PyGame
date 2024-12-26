@@ -1,4 +1,4 @@
-from прил import main
+from menu_design import main_menu
 
 if __name__ == "__main__":
-    main()
+    main_menu()
