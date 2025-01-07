@@ -1,10 +1,12 @@
 import sys
 import pygame
+import pygame_widgets
+from pygame_widgets.slider import Slider
 from btns import Button
+from my_btns import *
 
 pygame.init()
 
-WIDTH, HEIGHT = 960, 550
 fps = 60
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('test')
@@ -15,35 +17,15 @@ my_cur = pygame.image.load('images/471ab378cf8d4ca5a5f52e68ee61e29f.webp')
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 all_buttons = []
+slider = Slider(screen, 100, 100, 800, 40, min=0, max=100, step=1)
 
 
 def main_menu():
     """Функция для создания главного меню"""
     global all_buttons
-    button_pos_x = WIDTH / 2 - (300 / 2)
-
-    start = Button(
-        x=button_pos_x, y=100, width=300, height=100,
-        text="Start",
-        bg_color=pygame.Color(255, 255, 255, 128), text_color=(0, 0, 0),
-        hover_color=pygame.Color(255, 100, 100, 128), border_color=(0, 100, 195),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки настроек
-    settings = Button(
-        x=button_pos_x, y=210, width=300, height=100,
-        text="Settings",
-        bg_color=pygame.Color(0, 0, 255, 128), text_color=(0, 0, 0),
-        hover_color=pygame.Color(255, 255, 100, 128), border_color=(100, 100, 0),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки выхода
-    quit = Button(
-        x=button_pos_x, y=320, width=300, height=100,
-        text="Quit",
-        bg_color=pygame.Color(255, 0, 0, 128), text_color=(0, 0, 0),
-        hover_color=pygame.Color(255, 100, 255, 128), border_color=(100, 0, 100),
-        sound_path='sounds/btns_sound.mp3')
+    start = to_new_game()
+    settings = to_settings()
+    quit = to_crash()
 
     all_buttons = [start, settings, quit]
 
@@ -51,8 +33,8 @@ def main_menu():
     while run:
         screen.fill((0, 0, 0))
         screen.blit(main_backround, (-270, 0))
-
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             run = close_menu(run, event)
             if event.type == pygame.USEREVENT and start.is_hovered:
                 fade()
@@ -73,37 +55,15 @@ def main_menu():
         if pygame.mouse.get_focused():
             pos = pygame.mouse.get_pos()
             screen.blit(my_cur, pos)
-        pygame.display.flip()
+        pygame.display.update()
 
 
 def settings_menu():
     """Функция для создания экрана с настройками"""
     global all_buttons
-    button_pos_x = WIDTH / 2 - (300 / 2)
-
-    # Инициализация кнопки для изменения громкости звука
-    audio = Button(
-        x=button_pos_x, y=100, width=300, height=100,
-        text="Audio",
-        bg_color=(139, 0, 0, 128), text_color=(0, 0, 0),
-        hover_color=(165, 42, 42, 128), border_color=(0, 100, 195),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки настройки расширения
-    video = Button(
-        x=button_pos_x, y=210, width=300, height=100,
-        text="Video",
-        bg_color=(106, 27, 27, 128), text_color=(0, 0, 0),
-        hover_color=(165, 42, 42, 128), border_color=(100, 100, 0),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки назад в главное меню
-    back = Button(
-        x=button_pos_x, y=320, width=300, height=100,
-        text="Back",
-        bg_color=(230, 10, 10, 128), text_color=(0, 0, 0),
-        hover_color=(165, 42, 42, 128), border_color=(100, 0, 100),
-        sound_path='sounds/btns_sound.mp3')
+    audio = settings_audio_btn()
+    video = settings_video_btn()
+    back = back_to_menu()
 
     all_buttons = [audio, video, back]
 
@@ -144,33 +104,11 @@ def settings_menu():
 def video_settings_menu():
     """Функция с кнопками для настроек расширения экрана"""
     global all_buttons
-    button_pos_x = WIDTH / 2 - (300 / 2)
+    full_hd = change_to_large_ext()
+    ext_960x550 = change_to_little_ext()
+    back_from_video = back_to_settings_from_video()
 
-    # Инициализация кнопки для расширения экрана Full HD
-    full_hd = Button(
-        x=button_pos_x, y=100, width=300, height=100,
-        text="Full HD",
-        bg_color=(128, 128, 32, 128), text_color=(0, 0, 0),
-        hover_color=(32, 64, 64, 128), border_color=(0, 100, 195),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки для расширения экрана 960 на 550
-    ext_960x550 = Button(
-        x=button_pos_x, y=210, width=300, height=100,
-        text="960x550",
-        bg_color=(32, 64, 64, 128), text_color=(0, 0, 0),
-        hover_color=(55, 90, 0, 128), border_color=(100, 100, 0),
-        sound_path='sounds/btns_sound.mp3')
-
-    # Инициализация кнопки назад в меню настроек
-    back_set = Button(
-        x=button_pos_x, y=320, width=300, height=100,
-        text="Back",
-        bg_color=(128, 10, 10, 128), text_color=(0, 0, 0),
-        hover_color=(40, 42, 42, 128), border_color=(100, 0, 100),
-        sound_path='sounds/btns_sound.mp3')
-
-    all_buttons = [full_hd, ext_960x550, back_set]
+    all_buttons = [full_hd, ext_960x550, back_from_video]
     run = True
     while run:
         screen.fill((0, 0, 0))
@@ -178,13 +116,13 @@ def video_settings_menu():
 
         for video_set_event in pygame.event.get():
             run = close_menu(run, video_set_event)
-            if video_set_event.type == pygame.USEREVENT and back_set.is_hovered:
+            if video_set_event.type == pygame.USEREVENT and back_from_video.is_hovered:
                 fade()
                 run = False
 
             if video_set_event.type == pygame.KEYDOWN:
                 if video_set_event.key == pygame.K_ESCAPE:
-                    back_set.sound.play()
+                    back_from_video.sound.play()
                     fade()
                     run = False
 
@@ -194,10 +132,10 @@ def video_settings_menu():
             if video_set_event.type == pygame.USEREVENT and full_hd.is_hovered:
                 change_video_mode(1920, 1080, pygame.FULLSCREEN)
 
-            for btn in [ext_960x550, full_hd, back_set]:
+            for btn in [ext_960x550, full_hd, back_from_video]:
                 btn.handle_event(video_set_event)
 
-        for btn in [ext_960x550, full_hd, back_set]:
+        for btn in [ext_960x550, full_hd, back_from_video]:
             btn.check_hover(pygame.mouse.get_pos())
             btn.draw(screen)
 
@@ -205,6 +143,11 @@ def video_settings_menu():
             pos = pygame.mouse.get_pos()
             screen.blit(my_cur, pos)
         pygame.display.flip()
+
+
+def audoi_settings_menu():
+    """Функция для настроек звука игры"""
+    global all_buttons
 
 
 def new_game():
@@ -254,7 +197,6 @@ def change_video_mode(w, h, full_screen=0):
     video_set_backround = pygame.image.load(f'images/home{WIDTH}.png')
     if WIDTH == 1920:
         WIDTH = 1300
-    button_pos_x = WIDTH / 2 - (300 / 2)
     for btn in all_buttons:
         btn.set_pos(button_pos_x, btn.y)
     fade()
