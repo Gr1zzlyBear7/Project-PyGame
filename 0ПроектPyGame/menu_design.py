@@ -2,11 +2,12 @@ import sys
 import pygame
 import pygame_widgets
 from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
 from btns import Button
 from my_btns import *
 
 pygame.init()
-
+loud = 1
 fps = 60
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('test')
@@ -17,7 +18,6 @@ my_cur = pygame.image.load('images/471ab378cf8d4ca5a5f52e68ee61e29f.webp')
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 all_buttons = []
-slider = Slider(screen, 100, 100, 800, 40, min=0, max=100, step=1)
 
 
 def main_menu():
@@ -89,6 +89,7 @@ def settings_menu():
                     btn.set_pos(WIDTH / 2 - (300 / 2), btn.y)
             if set_event.type == pygame.USEREVENT and audio.is_hovered:
                 fade()
+                audoi_settings_menu()
             for btn in [audio, video, back]:
                 btn.handle_event(set_event)
 
@@ -147,7 +148,48 @@ def video_settings_menu():
 
 def audoi_settings_menu():
     """Функция для настроек звука игры"""
-    global all_buttons
+    global all_buttons, loud
+    slider = Slider(screen, 100, 100, 600, 40, min=0, max=100, step=1)
+    slider.setValue(loud * 100)
+    back_from_audio = back_to_settings_from_audio()
+    all_buttons = [back_from_audio]
+    output = TextBox(screen, 800, 100, 50, 50, fontSize=15)
+    output.disable()
+
+    run = True
+    while run:
+        screen.fill((0, 0, 0))
+        screen.blit(video_set_backround, (0, -100))
+        print(len(global_buttons))
+        loud = slider.getValue() / 100
+        pygame.mixer.music.set_volume(loud)
+        output.setText(int(loud * 100))
+        for button in global_buttons:
+            if button.sound:
+                button.sound.set_volume(loud)
+        events = pygame.event.get()
+        for event in events:
+            run = close_menu(run, event)
+            back_from_audio.handle_event(event)
+
+            if event.type == pygame.USEREVENT and back_from_audio.is_hovered:
+                fade()
+                run = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    back_from_audio.sound.play()
+                    fade()
+                    run = False
+        back_from_audio.check_hover(pygame.mouse.get_pos())
+        back_from_audio.draw(screen)
+
+        if pygame.mouse.get_focused():
+            pos = pygame.mouse.get_pos()
+            screen.blit(my_cur, pos)
+
+        pygame_widgets.update(events)
+        pygame.display.update()
 
 
 def new_game():
