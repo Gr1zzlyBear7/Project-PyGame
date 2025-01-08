@@ -38,6 +38,7 @@ def main_menu():
             run = close_menu(run, event)
             if event.type == pygame.USEREVENT and start.is_hovered:
                 fade()
+                new_game()
             if event.type == pygame.USEREVENT and settings.is_hovered:
                 fade()
                 settings_menu()
@@ -159,11 +160,10 @@ def audoi_settings_menu():
     run = True
     while run:
         screen.fill((0, 0, 0))
-        screen.blit(video_set_backround, (0, -100))
-        print(len(global_buttons))
         loud = slider.getValue() / 100
         pygame.mixer.music.set_volume(loud)
         output.setText(int(loud * 100))
+        screen.blit(video_set_backround, (0, -100))
         for button in global_buttons:
             if button.sound:
                 button.sound.set_volume(loud)
@@ -181,6 +181,7 @@ def audoi_settings_menu():
                     back_from_audio.sound.play()
                     fade()
                     run = False
+
         back_from_audio.check_hover(pygame.mouse.get_pos())
         back_from_audio.draw(screen)
 
@@ -194,7 +195,43 @@ def audoi_settings_menu():
 
 def new_game():
     """Функция работает после нажатия на кнопку старт"""
-    pass
+    global all_buttons
+    new_game = create_new()
+    continue_btn = play_cont()
+    back_from_game = back_from_game_cred_to_menu()
+
+    all_buttons = [new_game, continue_btn, back_from_game]
+
+    run = True
+    while run:
+        screen.fill((0, 0, 0))
+        screen.blit(main_backround, (-270, 0))
+        events = pygame.event.get()
+        for event in events:
+            run = close_menu(run, event)
+            if event.type == pygame.USEREVENT and new_game.is_hovered:
+                fade()
+            if event.type == pygame.USEREVENT and continue_btn.is_hovered:
+                fade()
+
+            if event.type == pygame.USEREVENT and back_from_game.is_hovered:
+                run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    back_from_game.sound.play()
+                    fade()
+                    run = False
+
+            for btn in all_buttons:
+                btn.handle_event(event)
+
+        for btn in all_buttons:
+            btn.check_hover(pygame.mouse.get_pos())
+            btn.draw(screen)
+        if pygame.mouse.get_focused():
+            pos = pygame.mouse.get_pos()
+            screen.blit(my_cur, pos)
+        pygame.display.update()
 
 
 def fade():

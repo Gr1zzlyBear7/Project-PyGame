@@ -1,13 +1,14 @@
 from btns import Button
 from size import *
 import pygame
+
 pygame.mixer.init()
 button_pos_x = WIDTH / 2 - (300 / 2)
 
 # Инициализвция кнопки старт
 start = Button(
     x=button_pos_x, y=100, width=300, height=100,
-    text="New Game",
+    text="Play",
     bg_color=pygame.Color(255, 255, 255, 128), text_color=(0, 0, 0),
     hover_color=pygame.Color(255, 100, 100, 128), border_color=(0, 100, 195),
     sound_path='sounds/btns_sound.mp3')
@@ -135,4 +136,45 @@ def back_to_settings_from_audio():
     return back_set_fa
 
 
-global_buttons = [start, settings, quit, audio, back_set, full_hd, ext_960x550, video, back, back_set_fa]
+# Инициализвция кнопки для создания новой игры
+new_game = Button(
+    x=button_pos_x, y=100, width=300, height=100,
+    text="New Game",
+    bg_color=pygame.Color(220, 20, 60, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(124, 252, 0, 128), border_color=(0, 100, 195),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def create_new():
+    return new_game
+
+
+# Инициализация кнопки для продолжения игры
+continue_btn = Button(
+    x=button_pos_x, y=210, width=300, height=100,
+    text="Continue",
+    bg_color=pygame.Color(102, 205, 107, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(10, 30, 10, 128), border_color=(100, 100, 0),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def play_cont():
+    return continue_btn
+
+
+# Инициализация кнопки назад в главное меню
+
+back_from_game = Button(
+    x=button_pos_x, y=320, width=300, height=100,
+    text="Back",
+    bg_color=pygame.Color(245, 222, 179, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(210, 180, 140, 128), border_color=(100, 0, 100),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def back_from_game_cred_to_menu():
+    return back_from_game
+
+
+global_buttons = [start, settings, quit, audio, back_set, full_hd, ext_960x550, video, back, back_set_fa, new_game,
+                  continue_btn, back_from_game]
