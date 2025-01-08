@@ -28,6 +28,7 @@ def main_menu():
     quit = to_crash()
 
     all_buttons = [start, settings, quit]
+    arr = [start, settings, quit]
 
     run = True
     while run:
@@ -49,13 +50,9 @@ def main_menu():
                 run = False
             for btn in [start, settings, quit]:
                 btn.handle_event(event)
+        draw_btns(arr)
 
-        for btn in [start, settings, quit]:
-            btn.check_hover(pygame.mouse.get_pos())
-            btn.draw(screen)
-        if pygame.mouse.get_focused():
-            pos = pygame.mouse.get_pos()
-            screen.blit(my_cur, pos)
+        cur_image()
         pygame.display.update()
 
 
@@ -67,6 +64,7 @@ def settings_menu():
     back = back_to_menu()
 
     all_buttons = [audio, video, back]
+    arr = [audio, video, back]
 
     run = True
     while run:
@@ -74,15 +72,8 @@ def settings_menu():
         screen.blit(set_backround, (0, -100))
 
         for set_event in pygame.event.get():
-            run = close_menu(run, set_event)
-            if set_event.type == pygame.USEREVENT and back.is_hovered:
-                fade()
-                run = False
-            if set_event.type == pygame.KEYDOWN:
-                if set_event.key == pygame.K_ESCAPE:
-                    back.sound.play()
-                    fade()
-                    run = False
+            run = close_menu(run, set_event, back)
+
             if set_event.type == pygame.USEREVENT and video.is_hovered:
                 fade()
                 video_settings_menu()
@@ -94,12 +85,8 @@ def settings_menu():
             for btn in [audio, video, back]:
                 btn.handle_event(set_event)
 
-        for btn in [audio, video, back]:
-            btn.check_hover(pygame.mouse.get_pos())
-            btn.draw(screen)
-        if pygame.mouse.get_focused():
-            pos = pygame.mouse.get_pos()
-            screen.blit(my_cur, pos)
+        draw_btns(arr)
+        cur_image()
         pygame.display.flip()
 
 
@@ -111,22 +98,14 @@ def video_settings_menu():
     back_from_video = back_to_settings_from_video()
 
     all_buttons = [full_hd, ext_960x550, back_from_video]
+    arr = [full_hd, ext_960x550, back_from_video]
     run = True
     while run:
         screen.fill((0, 0, 0))
         screen.blit(video_set_backround, (0, -100))
 
         for video_set_event in pygame.event.get():
-            run = close_menu(run, video_set_event)
-            if video_set_event.type == pygame.USEREVENT and back_from_video.is_hovered:
-                fade()
-                run = False
-
-            if video_set_event.type == pygame.KEYDOWN:
-                if video_set_event.key == pygame.K_ESCAPE:
-                    back_from_video.sound.play()
-                    fade()
-                    run = False
+            run = close_menu(run, video_set_event, back_from_video)
 
             if video_set_event.type == pygame.USEREVENT and ext_960x550.is_hovered:
                 change_video_mode(960, 550)
@@ -137,13 +116,9 @@ def video_settings_menu():
             for btn in [ext_960x550, full_hd, back_from_video]:
                 btn.handle_event(video_set_event)
 
-        for btn in [ext_960x550, full_hd, back_from_video]:
-            btn.check_hover(pygame.mouse.get_pos())
-            btn.draw(screen)
+        draw_btns(arr)
 
-        if pygame.mouse.get_focused():
-            pos = pygame.mouse.get_pos()
-            screen.blit(my_cur, pos)
+        cur_image()
         pygame.display.flip()
 
 
@@ -154,6 +129,7 @@ def audoi_settings_menu():
     slider.setValue(loud * 100)
     back_from_audio = back_to_settings_from_audio()
     all_buttons = [back_from_audio]
+    arr = [back_from_audio]
     output = TextBox(screen, 800, 100, 50, 50, fontSize=15)
     output.disable()
 
@@ -168,26 +144,14 @@ def audoi_settings_menu():
             if button.sound:
                 button.sound.set_volume(loud)
         events = pygame.event.get()
+
         for event in events:
-            run = close_menu(run, event)
+            run = close_menu(run, event, back_from_audio)
             back_from_audio.handle_event(event)
 
-            if event.type == pygame.USEREVENT and back_from_audio.is_hovered:
-                fade()
-                run = False
+        draw_btns(arr)
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    back_from_audio.sound.play()
-                    fade()
-                    run = False
-
-        back_from_audio.check_hover(pygame.mouse.get_pos())
-        back_from_audio.draw(screen)
-
-        if pygame.mouse.get_focused():
-            pos = pygame.mouse.get_pos()
-            screen.blit(my_cur, pos)
+        cur_image()
 
         pygame_widgets.update(events)
         pygame.display.update()
@@ -201,6 +165,7 @@ def new_game():
     back_from_game = back_from_game_cred_to_menu()
 
     all_buttons = [new_game, continue_btn, back_from_game]
+    arr = [new_game, continue_btn, back_from_game]
 
     run = True
     while run:
@@ -208,29 +173,17 @@ def new_game():
         screen.blit(main_backround, (-270, 0))
         events = pygame.event.get()
         for event in events:
-            run = close_menu(run, event)
+            run = close_menu(run, event, back_from_game)
             if event.type == pygame.USEREVENT and new_game.is_hovered:
                 fade()
             if event.type == pygame.USEREVENT and continue_btn.is_hovered:
                 fade()
 
-            if event.type == pygame.USEREVENT and back_from_game.is_hovered:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    back_from_game.sound.play()
-                    fade()
-                    run = False
-
             for btn in all_buttons:
                 btn.handle_event(event)
 
-        for btn in all_buttons:
-            btn.check_hover(pygame.mouse.get_pos())
-            btn.draw(screen)
-        if pygame.mouse.get_focused():
-            pos = pygame.mouse.get_pos()
-            screen.blit(my_cur, pos)
+        draw_btns(arr)
+        cur_image()
         pygame.display.update()
 
 
@@ -258,11 +211,20 @@ def fade():
         clock.tick(fps)
 
 
-def close_menu(run, event):
-    """Если нажали на крестик, то выходит из приложения"""
+def close_menu(run, event, btn=None):
+    """Если нажали на крестик, то выходит из приложения, а если на кнопку Back, то возвращает в предыдущее меню"""
     if event.type == pygame.QUIT:
         run = False
         sys.exit()
+    if btn:
+        if event.type == pygame.USEREVENT and btn.is_hovered:
+            fade()
+            run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                btn.sound.play()
+                fade()
+                run = False
     return run
 
 
@@ -279,3 +241,15 @@ def change_video_mode(w, h, full_screen=0):
     for btn in all_buttons:
         btn.set_pos(button_pos_x, btn.y)
     fade()
+
+
+def cur_image():
+    if pygame.mouse.get_focused():
+        pos = pygame.mouse.get_pos()
+        screen.blit(my_cur, pos)
+
+
+def draw_btns(arr):
+    for btn in arr:
+        btn.check_hover(pygame.mouse.get_pos())
+        btn.draw(screen)
