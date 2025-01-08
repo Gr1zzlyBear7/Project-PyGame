@@ -176,5 +176,44 @@ def back_from_game_cred_to_menu():
     return back_from_game
 
 
+# Инициализвция кнопки для легкой сложности
+easy = Button(
+    x=button_pos_x, y=100, width=300, height=100,
+    text="Easy",
+    bg_color=pygame.Color(220, 20, 60, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(124, 252, 0, 128), border_color=(0, 100, 195),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def easy_toggle():
+    return easy
+
+
+# Инициализация кнопки для средней сложности
+medium = Button(
+    x=button_pos_x, y=210, width=300, height=100,
+    text="Medium",
+    bg_color=pygame.Color(102, 205, 107, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(10, 30, 10, 128), border_color=(100, 100, 0),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def medium_toggle():
+    return medium
+
+
+# Инициализация кнопки назад в меню для создания игры
+back_from_game_creating = Button(
+    x=button_pos_x, y=320, width=300, height=100,
+    text="Back",
+    bg_color=pygame.Color(245, 222, 179, 128), text_color=(0, 0, 0),
+    hover_color=pygame.Color(210, 180, 140, 128), border_color=(100, 0, 100),
+    sound_path='sounds/btns_sound.mp3')
+
+
+def back_from_game_creating_to_menu():
+    return back_from_game_creating
+
+
 global_buttons = [start, settings, quit, audio, back_set, full_hd, ext_960x550, video, back, back_set_fa, new_game,
-                  continue_btn, back_from_game]
+                  continue_btn, back_from_game, back_from_game_creating, easy, medium]

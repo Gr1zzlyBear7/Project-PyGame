@@ -14,6 +14,7 @@ pygame.display.set_caption('test')
 main_backround = pygame.image.load('images/viking960.png')
 set_backround = pygame.image.load('images/valkirya960.png')
 video_set_backround = pygame.image.load('images/home960.png')
+new_game_bg = pygame.image.load('images/newgame960.png')
 my_cur = pygame.image.load('images/471ab378cf8d4ca5a5f52e68ee61e29f.webp')
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
@@ -176,6 +177,7 @@ def new_game():
             run = close_menu(run, event, back_from_game)
             if event.type == pygame.USEREVENT and new_game.is_hovered:
                 fade()
+                play_new()
             if event.type == pygame.USEREVENT and continue_btn.is_hovered:
                 fade()
 
@@ -185,6 +187,41 @@ def new_game():
         draw_btns(arr)
         cur_image()
         pygame.display.update()
+
+
+def previous_game():
+    """Запускает предыдущую игру"""
+    pass
+
+
+def play_new():
+    """Запускает новую игру"""
+    global all_buttons
+
+    easy = easy_toggle()
+    medium = medium_toggle()
+    back_from_game_creating = back_from_game_creating_to_menu()
+    arr = [easy, medium, back_from_game_creating]
+    all_buttons = [easy, medium, back_from_game_creating]
+
+    run = True
+    while run:
+        screen.fill((0, 0, 0))
+        screen.blit(new_game_bg, (0, -100))
+
+        for event in pygame.event.get():
+            run = close_menu(run, event, back_from_game_creating)
+            if event.type == pygame.USEREVENT and easy.is_hovered:
+                fade()
+            if event.type == pygame.USEREVENT and medium.is_hovered:
+                fade()
+            for btn in arr:
+                btn.handle_event(event)
+
+        draw_btns(arr)
+
+        cur_image()
+        pygame.display.flip()
 
 
 def fade():
@@ -230,12 +267,13 @@ def close_menu(run, event, btn=None):
 
 def change_video_mode(w, h, full_screen=0):
     """В функции представленна сменя расщирения экрана"""
-    global WIDTH, HEIGHT, screen, main_backround, set_backround, video_set_backround, all_buttons
+    global WIDTH, HEIGHT, screen, main_backround, set_backround, video_set_backround, new_game_bg, all_buttons
     WIDTH, HEIGHT = w, h
     screen = pygame.display.set_mode((WIDTH, HEIGHT), full_screen)
     main_backround = pygame.image.load(f'images/viking{WIDTH}.png')
     set_backround = pygame.image.load(f'images/valkirya{WIDTH}.png')
     video_set_backround = pygame.image.load(f'images/home{WIDTH}.png')
+    new_game_bg = pygame.image.load(f'images/newgame{WIDTH}.png')
     if WIDTH == 1920:
         WIDTH = 1300
     for btn in all_buttons:
